@@ -29,6 +29,7 @@ def show_banner():
         border_style="cyan",
     )
     console.print(panel)
+    console.print("[bold cyan]  Good evening. I am J.A.R.V.I.S. — at your service.[/bold cyan]")
     console.print()
 
 
@@ -43,7 +44,7 @@ def user_prompt() -> str:
 @contextmanager
 def show_thinking():
     """Show a spinner while JARVIS is thinking."""
-    spinner = Spinner("dots", text="[cyan]JARVIS is thinking...[/cyan]")
+    spinner = Spinner("dots", text="[cyan]Processing, sir...[/cyan]")
     with Live(spinner, console=console, refresh_per_second=12, transient=True):
         yield
 
@@ -51,7 +52,7 @@ def show_thinking():
 def show_response(text: str):
     """Render JARVIS's response as markdown in a panel."""
     md = Markdown(text)
-    panel = Panel(md, title="[bold cyan]JARVIS[/bold cyan]", border_style="cyan")
+    panel = Panel(md, title="[bold cyan]J.A.R.V.I.S.[/bold cyan]", border_style="cyan")
     console.print(panel)
     console.print()
 
@@ -81,4 +82,4 @@ def show_error(msg: str):
 
 def show_farewell():
     """Show a goodbye message."""
-    console.print("\n[bold cyan]JARVIS:[/bold cyan] Goodbye! Have a great day.\n")
+    console.print("\n[bold cyan]J.A.R.V.I.S.:[/bold cyan] Will that be all, sir? Very well. Good evening.\n")
