@@ -1,76 +1,76 @@
-# JARVIS - AI Terminal Assistant
+# J.A.R.V.I.S. — Just A Rather Very Intelligent System
 
-A command-line AI assistant powered by Claude, inspired by the iconic JARVIS from Iron Man.
+A hyper-intelligent AI terminal assistant powered by Claude Code, modelled after the iconic AI from the Iron Man universe. No API key required — runs on your Claude Pro subscription.
 
-## What Can JARVIS Do?
+## Quick Start
 
-- **System Control** -- Run shell commands, check system info, open applications
-- **File Management** -- Read, write, list, and search files
-- **Weather** -- Get current weather for any city (requires free API key)
-- **Web Search** -- Search the web via DuckDuckGo (no API key needed)
-- **Code Assistant** -- Write, review, debug, and run Python code
+### Prerequisites
 
-## Quick Setup
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
+- Claude Pro subscription (any tier)
 
-### 1. Install Python dependencies
+### Activate JARVIS
 
 ```bash
-pip install -r requirements.txt
+cd Commander
+claude
 ```
 
-### 2. Set up your API key
+That's it. JARVIS activates automatically when Claude Code opens this directory.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `/status` | Full system status briefing — OS, uptime, disk, memory, CPU |
+| `/weather <city>` | Current weather for any city |
+| `/review <file>` | Thorough code review with security, performance, and quality analysis |
+| `/brief` | Morning briefing — system status, git state, recent activity |
+
+You can also just talk naturally — JARVIS handles any request Claude Code can:
+
+```
+> What's my disk usage looking like?
+> Write a Python script that sorts a CSV file
+> Explain how this codebase works
+> Search the web for the latest Node.js LTS version
+```
+
+## Optional: Weather API
+
+For precise weather data, get a free API key from [OpenWeatherMap](https://openweathermap.org/api):
 
 ```bash
 cp .env.example .env
+# Edit .env and add your OPENWEATHER_API_KEY
 ```
 
-Open the `.env` file and replace `sk-ant-xxxxx` with your actual Anthropic API key.
-Get one at: https://console.anthropic.com/
-
-### 3. Run JARVIS
-
-```bash
-python jarvis.py
-```
-
-## Usage
-
-Once running, just type naturally:
-
-```
-> What's my operating system?
-> List the files in my home directory
-> Write a Python script that generates a random password
-> Search the web for Python best practices
-> What's the weather in Tokyo?
-```
-
-### Commands
-
-- Type `exit`, `quit`, or `bye` to leave
-- Type `clear` to reset the conversation
-- Press `Ctrl+C` to quit at any time
-
-## Optional: Weather
-
-To enable weather features, get a free API key from [OpenWeatherMap](https://openweathermap.org/api) and add it to your `.env` file:
-
-```
-OPENWEATHER_API_KEY=your_key_here
-```
+Without an API key, `/weather` falls back to web search results.
 
 ## Project Structure
 
 ```
-jarvis.py           Entry point -- run this
-config.py           Loads API keys from .env
-chat.py             Conversation loop and Claude API integration
-ui.py               Terminal UI (colors, panels, spinners)
-tools/
-  __init__.py       Tool registry
-  system.py         Shell commands, system info, open apps
-  files.py          File read/write/list/search
-  weather.py        Weather lookups
-  web_search.py     Web search via DuckDuckGo
-  code_helper.py    Code analysis and Python execution
+CLAUDE.md                          JARVIS persona (loaded automatically)
+.claude/
+  settings.json                    Project permissions
+  skills/
+    status/SKILL.md                /status command
+    weather/SKILL.md               /weather command
+    weather/fetch_weather.py       Weather API helper
+    review/SKILL.md                /review command
+    brief/SKILL.md                 /brief command
+.env.example                       API key template (optional)
+requirements.txt                   Python deps for weather helper
+legacy/                            Standalone Python chatbot (requires API key)
+```
+
+## Legacy Standalone App
+
+The `legacy/` directory contains a standalone Python chatbot version of JARVIS that uses the Anthropic API directly. It requires an `ANTHROPIC_API_KEY` (billed per-token, not covered by Pro).
+
+```bash
+cd legacy
+pip install -r ../requirements.txt
+cp ../.env.example ../.env  # add ANTHROPIC_API_KEY
+python jarvis.py
 ```
