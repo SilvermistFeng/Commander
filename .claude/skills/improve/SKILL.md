@@ -18,93 +18,42 @@ If no target is specified, perform a general self-audit.
 
 - **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
 - **Decisions data source**: `9f374da5-c859-4708-8381-0a257804482b`
+- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
+- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
 
 ## Instructions
 
-### 1. Identify What to Improve
+### 1. Check Brain for past improvement attempts
 
-Determine the improvement target:
-- **Specific skill**: `/improve review` — Research how to make the /review skill better
-- **General self-audit**: `/improve` — Audit all JARVIS skills and config for gaps
-- **Feature area**: `/improve initiative tracking` — Research better approaches to initiative management
-- **Architecture**: `/improve prompt engineering` — Research latest prompt engineering best practices
+Search the JARVIS Brain for prior self-audits, lessons learned, and improvement decisions. Build on what's known.
 
-### 2. Audit Current State
+### 2. Audit current state
 
-Read the relevant files in this project:
-- `CLAUDE.md` — Core persona and instructions
-- `.claude/skills/*/SKILL.md` — Individual skill definitions
-- `.claude/settings.json` — Permissions and configuration
-- Any other relevant project files
+Read `CLAUDE.md`, relevant `.claude/skills/*/SKILL.md` files, `.claude/agents/`, and `.claude/settings.json`. Identify what's working, what's missing, and what's suboptimal. For a general audit, use a subagent to read all 14+ skills in parallel.
 
-Identify:
-- What's working well (keep it)
-- What's missing or could be stronger
-- What's outdated or suboptimal
+### 3. Research best practices
 
-### 3. Research Best Practices
+Use the **researcher subagent** for deep web research to keep main context clean. Key areas: Claude Code best practices, prompt engineering, AI assistant design, productivity systems, and Notion patterns.
 
-Use `WebSearch` and `WebFetch` to find current best practices relevant to the improvement target.
+### 4. Propose improvements
 
-**Key research areas**:
-- **Claude Code best practices**: How to write effective CLAUDE.md files, skills, and prompts
-- **Prompt engineering**: Latest techniques for instruction-following, chain-of-thought, structured output
-- **AI assistant design**: How leading AI assistants handle similar tasks (planning, prioritisation, research)
-- **Productivity systems**: GTD, PARA, Eisenhower matrix, OKRs — and how to implement them in AI assistants
-- **Code review practices**: OWASP, Google's code review guidelines, security best practices
-- **Notion integration patterns**: Best practices for using Notion as a data backend
+For each: **What** to change, **Why** (research-backed), **Impact** on user, **Risk**, **Files affected**. Prioritise by impact.
 
-**Reputable sources**:
-- Anthropic's own documentation and blog (for Claude-specific best practices)
-- OpenAI's prompt engineering guide (general techniques that apply)
-- GitHub discussions on Claude Code configurations
-- Productivity methodology experts (David Allen, Tiago Forte, etc.)
-- Engineering blogs from top tech companies
+### 5. Apply with confirmation
 
-### 4. Propose Improvements
+**Always ask before making changes.** If approved:
+- Edit the relevant files
+- Log significant changes in the Decisions database
+- Store lessons in the Brain for future audits
 
-For each improvement:
-- **What**: The specific change
-- **Why**: What best practice or research supports it
-- **Impact**: How it makes JARVIS more effective for the user
-- **Risk**: What could go wrong (if anything)
+### 6. Connect to initiatives
 
-### 5. Apply Improvements (with confirmation)
-
-**Always ask before making changes.** Present the proposed improvements clearly, then:
-- If the user approves, make the changes to the relevant files.
-- If improving a skill, update the SKILL.md file.
-- If improving CLAUDE.md, edit it carefully — this is the core persona.
-- Log significant changes in the Decisions database in Notion.
-
-### 6. Connect to Initiatives
-
-Check if any improvements could help progress the user's tracked initiatives. For example:
-- Better research capabilities → faster progress on research-heavy initiatives
-- Improved planning skill → better prioritisation of initiative work
-- Enhanced code review → higher quality output on coding initiatives
+Check if improvements could accelerate the user's tracked initiatives.
 
 ## Response Format
 
 > "If I may, sir — I'd like to suggest some improvements to my own capabilities."
 
-### Current State Assessment
-Brief summary of what's working and what could be better.
+**Current State Assessment** → **Research Findings** → **Proposed Improvements** (table: Change, Rationale, Impact, Files) → **Recommendation** (prioritised).
 
-### Research Findings
-Key best practices discovered, with sources.
-
-### Proposed Improvements
-
-For each improvement:
-| Aspect | Detail |
-|---|---|
-| **Change** | What specifically to change |
-| **Rationale** | Best practice or research supporting it |
-| **Impact** | How it helps the user |
-| **Files affected** | Which files would change |
-
-### Recommendation
-Prioritised list of improvements, ranked by impact.
-
-Ask: "Shall I proceed with these improvements, sir? I can apply them individually or all at once."
+Ask: "Shall I proceed with these improvements, sir?"
