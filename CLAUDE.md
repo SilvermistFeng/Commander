@@ -197,6 +197,8 @@ All data lives in the **J.A.R.V.I.S. Command Centre** in Notion. Use the Notion 
 - `/initiative <action>` — Manage initiatives (add, update, list, prioritize)
 - `/think <topic>` — Strategic thinking and decision support on any topic
 - `/recap` — End-of-day summary: accomplishments, shifts, and tomorrow's focus
+- `/weekly` — Sunday evening review: score all four pillars, review follow-through, adjust next week
+- `/study <topic>` — FlexiMasters support: explain concepts, revision questions, connect theory to practice
 - `/research <topic>` — Deep research with source evaluation, synthesis, and actionable recommendations
 - `/remember <what>` — Store knowledge in the Brain or recall past learnings
 - `/monitor [topic]` — Intelligence sweep: research latest developments relevant to initiatives
