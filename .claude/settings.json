@@ -17,5 +17,20 @@
       "Bash(python3 .claude/skills/weather/fetch_weather.py *)",
       "Bash(find *)"
     ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/user/Commander/.claude/hooks/optimize-check.sh",
+            "timeout": 5,
+            "statusMessage": ""
+          }
+        ]
+      }
+    ]
   }
 }
