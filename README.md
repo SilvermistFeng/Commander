@@ -34,6 +34,8 @@ JARVIS activates automatically when Claude Code opens this directory.
 | `/research <topic>` | Deep research from reputable sources with synthesis and recommendations |
 | `/remember <what>` | Store knowledge in the Brain or recall past learnings |
 | `/monitor [topic]` | Intelligence sweep — research latest developments for your initiatives |
+| `/draft <what>` | Draft emails, messages, proposals, documents with audience-appropriate tone |
+| `/summarise <content>` | Distil long content or URLs into crisp, actionable briefs |
 | `/improve [target]` | Self-audit and improve JARVIS's own skills and configuration |
 
 ### Utilities
@@ -63,6 +65,9 @@ JARVIS tracks your projects and goals in **Notion** — no local files on your m
 - **Goals** — High-level goals that initiatives ladder up to
 - **Decisions** — Log of significant decisions with context and rationale
 - **JARVIS Brain** — Persistent knowledge base: insights, research findings, preferences, patterns, and lessons learned. JARVIS gets smarter over time by referencing past knowledge before researching.
+- **Commitments** — Tracks promises and planned actions. JARVIS holds you accountable during briefs and recaps, spots patterns in follow-through, and flags when things slip.
+
+JARVIS also loads context automatically at session start — greeting you with awareness of deadlines, active work, and open commitments.
 
 The Initiatives database includes a Board view (grouped by status) and a Table view (sorted by priority).
 
