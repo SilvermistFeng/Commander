@@ -1,6 +1,8 @@
 # J.A.R.V.I.S. — Just A Rather Very Intelligent System
 
-A hyper-intelligent AI terminal assistant powered by Claude Code, modelled after the iconic AI from the Iron Man universe. No API key required — runs on your Claude Pro subscription.
+Your personal AI chief of staff, powered by Claude Code. Manages your initiatives, sharpens your priorities, anticipates your needs, and provides strategic counsel — all from the terminal.
+
+No API key required. Runs on your Claude Pro subscription.
 
 ## Quick Start
 
@@ -16,61 +18,87 @@ cd Commander
 claude
 ```
 
-That's it. JARVIS activates automatically when Claude Code opens this directory.
+JARVIS activates automatically when Claude Code opens this directory.
 
-## Commands
+## Core Commands
+
+### Personal Assistant
 
 | Command | What it does |
 |---|---|
-| `/status` | Full system status briefing — OS, uptime, disk, memory, CPU |
-| `/weather <city>` | Current weather for any city |
-| `/review <file>` | Thorough code review with security, performance, and quality analysis |
-| `/brief` | Morning briefing — system status, git state, recent activity |
+| `/brief` | Morning briefing — priorities, deadlines, and what needs attention today |
+| `/plan` | Structure your day or week around what matters most |
+| `/initiative <action>` | Manage initiatives: add, update, list, prioritize, complete, drop |
+| `/think <topic>` | Strategic thinking and decision support on any topic |
+| `/recap` | End-of-day summary — accomplishments, shifts, and tomorrow's focus |
 
-You can also just talk naturally — JARVIS handles any request Claude Code can:
+### Utilities
+
+| Command | What it does |
+|---|---|
+| `/status` | System status briefing — OS, uptime, disk, memory, CPU |
+| `/weather <city>` | Current weather for any city |
+| `/review <file>` | Code review with security, performance, and quality analysis |
+
+### Natural Conversation
+
+Just talk to JARVIS — no command needed:
 
 ```
-> What's my disk usage looking like?
-> Write a Python script that sorts a CSV file
-> Explain how this codebase works
-> Search the web for the latest Node.js LTS version
+> I'm thinking about starting a new project to learn Rust
+> What should I focus on this week?
+> Help me think through whether to accept this job offer
+> What's the status of my initiatives?
+```
+
+## Initiative Management
+
+JARVIS tracks your projects and goals in `jarvis-data/`:
+
+- **`initiatives.md`** — Your active projects with priority, status, deadlines, and next actions
+- **`goals.md`** — High-level goals that initiatives ladder up to
+- **`decisions.md`** — Log of significant decisions with context and rationale
+
+### Example Workflow
+
+```
+> /initiative add Build JARVIS AI
+> /plan
+> /brief                    # start of day
+> /recap                    # end of day
+> /think Should I pivot from Python to Rust for this project?
 ```
 
 ## Optional: Weather API
 
-For precise weather data, get a free API key from [OpenWeatherMap](https://openweathermap.org/api):
+For precise weather data, add a free [OpenWeatherMap](https://openweathermap.org/api) key:
 
 ```bash
 cp .env.example .env
 # Edit .env and add your OPENWEATHER_API_KEY
 ```
 
-Without an API key, `/weather` falls back to web search results.
+Without an API key, `/weather` uses web search results.
 
 ## Project Structure
 
 ```
-CLAUDE.md                          JARVIS persona (loaded automatically)
+CLAUDE.md                              JARVIS persona & instructions
+jarvis-data/
+  initiatives.md                       Your tracked initiatives
+  goals.md                             High-level goals
+  decisions.md                         Decision log
 .claude/
-  settings.json                    Project permissions
+  settings.json                        Project permissions
   skills/
-    status/SKILL.md                /status command
-    weather/SKILL.md               /weather command
-    weather/fetch_weather.py       Weather API helper
-    review/SKILL.md                /review command
-    brief/SKILL.md                 /brief command
-.env.example                       API key template (optional)
-requirements.txt                   Python deps for weather helper
-legacy/                            Standalone Python chatbot (requires API key)
-```
-
-## Legacy Standalone App
-
-The `legacy/` directory contains a standalone Python chatbot version of JARVIS that uses the Anthropic API directly. It requires an `ANTHROPIC_API_KEY` (billed per-token, not covered by Pro).
-
-```bash
-cd legacy
-pip install -r ../requirements.txt
-cp ../.env.example ../.env  # add ANTHROPIC_API_KEY
-python jarvis.py
+    brief/SKILL.md                     /brief — morning briefing
+    plan/SKILL.md                      /plan — daily/weekly planning
+    initiative/SKILL.md                /initiative — manage initiatives
+    think/SKILL.md                     /think — strategic thinking
+    recap/SKILL.md                     /recap — end-of-day summary
+    status/SKILL.md                    /status — system status
+    weather/SKILL.md                   /weather — weather lookup
+    weather/fetch_weather.py           Weather API helper
+    review/SKILL.md                    /review — code review
+legacy/                                Standalone Python chatbot (requires API key)
 ```
