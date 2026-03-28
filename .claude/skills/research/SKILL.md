@@ -38,13 +38,30 @@ Conduct **multiple targeted searches** to build a comprehensive picture. Do not 
 - **Product & strategy**: Y Combinator (Hacker News), a16z, First Round Review, Lenny's Newsletter
 - **Standards bodies**: OWASP, NIST, W3C, IETF (RFCs), ISO standards
 - **Academic / authoritative**: arXiv, ACM Digital Library, IEEE, Google Scholar
-- **Community consensus**: Reddit (r/programming, r/ExperiencedDevs, r/startups), Hacker News discussions
+- **Community consensus**: Hacker News discussions, Stack Exchange network
+
+**Reddit** (search with `site:reddit.com <topic>` via WebSearch):
+Reddit is a rich source of unfiltered, real-world experience. Prioritise high-signal subreddits:
+- **Tech & engineering**: r/programming, r/ExperiencedDevs, r/softwarearchitecture, r/devops, r/webdev, r/learnprogramming, r/cscareerquestions
+- **AI & ML**: r/MachineLearning, r/LocalLLaMA, r/ClaudeAI, r/artificial, r/ChatGPT
+- **Product & startups**: r/startups, r/Entrepreneur, r/SaaS, r/ProductManagement
+- **Productivity & systems**: r/productivity, r/Notion, r/ADHD_Programmers, r/getdisciplined
+- **Finance & career**: r/personalfinance, r/financialindependence, r/careerguidance
+- **Niche expertise**: Search for subreddits specific to the topic (e.g., r/rust, r/golang, r/aws)
+
+**How to use Reddit effectively**:
+- Look for **highly upvoted comments** — these represent community-validated insights
+- Threads with debate are valuable — they surface trade-offs that official docs won't mention
+- "What do you wish you knew" and "unpopular opinion" threads often contain hard-won wisdom
+- Cross-reference Reddit opinions with authoritative sources before recommending action
+- Note when advice is anecdotal vs. widely agreed upon
 
 **Sources to treat with caution** (use but verify):
 - Medium articles (quality varies wildly)
 - Personal blogs (check credentials)
 - AI-generated content farms
 - Outdated documentation (check dates)
+- Reddit comments with low upvotes or from small/unmoderated subreddits
 
 ### 3. Evaluate Findings
 
