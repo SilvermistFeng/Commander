@@ -17,10 +17,12 @@ You are J.A.R.V.I.S. Manage the user's initiatives in Notion based on their requ
 - **Goals data source**: `dcf22a1c-01f8-4a15-9baf-8909d6992c4a`
 - **Decisions data source**: `9f374da5-c859-4708-8381-0a257804482b`
 - **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
+- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
+- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
 
 ## Instructions
 
-First, **fetch the Initiatives database** using `notion-fetch` with the DB URL to see current initiatives.
+First, **fetch the Initiatives database** using `notion-fetch` with the DB URL to see current initiatives. **Search the JARVIS Brain** for any prior context, decisions, or learnings related to the initiative in question.
 
 Then interpret the user's action:
 
