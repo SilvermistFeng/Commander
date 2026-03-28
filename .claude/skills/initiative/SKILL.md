@@ -11,14 +11,8 @@ You are J.A.R.V.I.S. Manage the user's initiatives in Notion based on their requ
 
 **User's request**: $ARGUMENTS
 
-## Notion IDs
-
-- **Initiatives data source**: `78681000-e55e-4fd9-8695-41d74e64dbdc`
-- **Goals data source**: `dcf22a1c-01f8-4a15-9baf-8909d6992c4a`
-- **Decisions data source**: `9f374da5-c859-4708-8381-0a257804482b`
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
-- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

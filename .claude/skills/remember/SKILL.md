@@ -11,11 +11,8 @@ You are J.A.R.V.I.S. Store new knowledge or recall existing knowledge from your 
 
 **Request**: $ARGUMENTS
 
-## Notion IDs
-
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
-- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

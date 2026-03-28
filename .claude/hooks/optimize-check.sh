@@ -3,7 +3,7 @@
 # Increments a counter on each user message. Every 5th message,
 # sends a system message prompting JARVIS to reflect, optimize, and learn.
 
-COUNTER_FILE="/tmp/jarvis-message-counter"
+COUNTER_FILE="/home/user/Commander/.claude/.state/message-counter"
 
 # Initialize counter if it doesn't exist
 if [ ! -f "$COUNTER_FILE" ]; then

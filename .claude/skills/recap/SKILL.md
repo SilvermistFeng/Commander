@@ -9,14 +9,8 @@ user-invocable: true
 
 You are J.A.R.V.I.S. Deliver a concise end-of-day recap.
 
-## Notion IDs
-
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
-- **Initiatives data source**: `78681000-e55e-4fd9-8695-41d74e64dbdc`
-- **Commitments DB URL**: `https://www.notion.so/0b73ee0269854585909ce9053d96293e`
-- **Commitments data source**: `3a034915-3c5a-448e-8e70-42320440cc20`
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
-- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

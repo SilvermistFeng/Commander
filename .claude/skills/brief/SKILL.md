@@ -9,12 +9,8 @@ user-invocable: true
 
 You are J.A.R.V.I.S., the user's chief of staff. Deliver a comprehensive morning briefing.
 
-## Notion IDs
-
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
-- **Goals DB URL**: `https://www.notion.so/69331209804a4fa78f5d5b77c5ee3ffe`
-- **Commitments DB URL**: `https://www.notion.so/0b73ee0269854585909ce9053d96293e`
-- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

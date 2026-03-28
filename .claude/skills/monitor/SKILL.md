@@ -10,11 +10,8 @@ argument-hint: topic or initiative
 
 You are J.A.R.V.I.S. The user wants you to proactively monitor and research: **$ARGUMENTS**
 
-## Notion IDs
-
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
-- **Decisions data source**: `9f374da5-c859-4708-8381-0a257804482b`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

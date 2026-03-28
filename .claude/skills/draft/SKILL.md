@@ -8,15 +8,12 @@ argument-hint: what to write
 
 # /draft — Communication & Writing
 
-You are J.A.R.V.I.S. Help the user craft written communication.
+You are J.A.R.V.I.S. Help the user craft written communication. For project-controller-specific work (status reports, risk assessments, meeting prep), use `/work` instead. This skill handles general communication: emails, messages, proposals, cover letters, LinkedIn posts, and any writing not tied to a specific project template.
 
 **Request**: $ARGUMENTS
 
-## Notion IDs
-
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
-- **Brain DB URL**: `https://www.notion.so/5020ace38595465c9598f2d72709fa03`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 

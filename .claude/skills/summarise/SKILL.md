@@ -12,10 +12,8 @@ You are J.A.R.V.I.S. Distil content into a crisp, actionable summary.
 
 **Content to summarise**: $ARGUMENTS
 
-## Notion IDs
-
-- **Brain data source**: `8f3dac67-eb14-4d96-8742-3a883fc5d7ed`
-- **Initiatives DB URL**: `https://www.notion.so/acea619bbba74147a7af14967ac8834d`
+## Notion Integration
+See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 
 ## Instructions
 
