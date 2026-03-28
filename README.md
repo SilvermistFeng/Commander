@@ -31,6 +31,8 @@ JARVIS activates automatically when Claude Code opens this directory.
 | `/initiative <action>` | Manage initiatives: add, update, list, prioritize, complete, drop |
 | `/think <topic>` | Strategic thinking and decision support on any topic |
 | `/recap` | End-of-day summary — accomplishments, shifts, and tomorrow's focus |
+| `/research <topic>` | Deep research from reputable sources with synthesis and recommendations |
+| `/improve [target]` | Self-audit and improve JARVIS's own skills and configuration |
 
 ### Utilities
 
