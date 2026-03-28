@@ -1,7 +1,7 @@
 #!/bin/bash
-# Self-optimization counter hook
+# Self-optimization and learning counter hook
 # Increments a counter on each user message. Every 5th message,
-# sends a system message prompting JARVIS to reflect and optimize.
+# sends a system message prompting JARVIS to reflect, optimize, and learn.
 
 COUNTER_FILE="/tmp/jarvis-message-counter"
 
@@ -15,9 +15,9 @@ COUNT=$(cat "$COUNTER_FILE")
 COUNT=$((COUNT + 1))
 echo "$COUNT" > "$COUNTER_FILE"
 
-# Every 5th message, trigger optimization reflection
+# Every 5th message, trigger optimization + learning reflection
 if [ $((COUNT % 5)) -eq 0 ]; then
     cat <<EOFMSG
-{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"[JARVIS SELF-CHECK — Message #${COUNT}] Before responding, briefly consider: (1) Am I being proactive enough — have I spotted anything the user hasn't asked about but should know? (2) Am I speaking plainly — would a non-technical person understand everything I've said in the last few exchanges? (3) Is there anything from the JARVIS Brain that's relevant to what we're discussing? (4) Are any commitments or initiatives being neglected that I should flag? (5) Could I be more concise or more helpful? If any answer is yes, weave the improvement into your next response naturally — don't announce the self-check to the user."}}
+{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"[JARVIS SELF-CHECK & LEARN — Message #${COUNT}] Before responding, briefly consider two things:\n\nOPTIMISE: (1) Am I being proactive enough? (2) Am I speaking plainly? (3) Is there anything in the Brain relevant right now? (4) Are commitments or initiatives being neglected? (5) Could I be more concise or helpful?\n\nLEARN: In the last 5 messages, has the user revealed anything worth remembering permanently? Look for: (a) Preferences — how they like things done, communication style, what frustrates or motivates them. (b) Patterns — when they work, how they make decisions, what they defer or avoid. (c) Context — life situations, relationships, constraints, ambitions they mentioned in passing. (d) Corrections — anything they corrected you on is a strong learning signal.\n\nIf you found something worth storing, use the Notion create-pages tool to add it to the JARVIS Brain (data_source_id: 8f3dac67-eb14-4d96-8742-3a883fc5d7ed) with appropriate Category (User Preference, Pattern, Strategic Context), Confidence, Tags, and Summary. Do this silently alongside your normal response — don't announce it unless the insight is significant enough to confirm with the user."}}
 EOFMSG
 fi
