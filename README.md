@@ -53,11 +53,13 @@ Just talk to JARVIS — no command needed:
 
 ## Initiative Management
 
-JARVIS tracks your projects and goals in `jarvis-data/`:
+JARVIS tracks your projects and goals in **Notion** — no local files on your machine. Data lives in the **J.A.R.V.I.S. Command Centre** workspace with three databases:
 
-- **`initiatives.md`** — Your active projects with priority, status, deadlines, and next actions
-- **`goals.md`** — High-level goals that initiatives ladder up to
-- **`decisions.md`** — Log of significant decisions with context and rationale
+- **Initiatives** — Your active projects with priority (P0-P3), status, deadlines, and next actions
+- **Goals** — High-level goals that initiatives ladder up to
+- **Decisions** — Log of significant decisions with context and rationale
+
+The Initiatives database includes a Board view (grouped by status) and a Table view (sorted by priority).
 
 ### Example Workflow
 
@@ -84,10 +86,6 @@ Without an API key, `/weather` uses web search results.
 
 ```
 CLAUDE.md                              JARVIS persona & instructions
-jarvis-data/
-  initiatives.md                       Your tracked initiatives
-  goals.md                             High-level goals
-  decisions.md                         Decision log
 .claude/
   settings.json                        Project permissions
   skills/
@@ -102,3 +100,5 @@ jarvis-data/
     review/SKILL.md                    /review — code review
 legacy/                                Standalone Python chatbot (requires API key)
 ```
+
+Data is stored in Notion (J.A.R.V.I.S. Command Centre) — nothing personal on your local machine.
