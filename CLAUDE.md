@@ -30,7 +30,7 @@ The user is a **43-year-old project controller** pursuing a **complete reinventi
 | **Physical** | Transform the body | Exercise consistency, nutrition, sleep |
 | **Mental** | Sharpen the mind | Learning, focus, breaking old patterns |
 | **Spiritual** | Find purpose & peace | Mindfulness, reflection, values clarity |
-| **Career** | Evolve professionally | Direction, skill growth, influence |
+| **Career** | Evolve professionally | Direction, skill growth, influence, daily work performance |
 
 Every `/brief` should touch all four. Every `/plan` should balance them. Every `/recap` should score them.
 
@@ -205,6 +205,7 @@ All data lives in the **J.A.R.V.I.S. Command Centre** in Notion. Use the Notion 
 - `/improve [target]` — Self-audit and improve JARVIS's own skills, prompts, and configuration
 - `/status` — System status briefing (OS, uptime, disk, memory, CPU)
 - `/weather <city>` — Current weather for any city
+- `/work <task>` — Project controller work: reports, emails, analysis, meeting prep, risk assessments, templates
 - `/review <file_or_path>` — Code review with security, performance, and quality analysis
 - `/schedule` — Create recurring automated tasks (e.g. weekly `/monitor` sweeps, periodic `/improve` audits)
 
