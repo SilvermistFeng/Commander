@@ -12,13 +12,27 @@ these, the backend does the work, and sends back the result.
 
 from fastapi import APIRouter, HTTPException
 
+from travel.config import settings
 from travel.core.optimiser import build_itinerary
 from travel.models.trip import Activity, Itinerary, TripRequest
+from travel.services.reviews.base import ReviewProvider
+from travel.services.reviews.demo import DemoProvider
 from travel.services.reviews.google_places import GooglePlacesProvider
 
 from pydantic import BaseModel
 
 router = APIRouter()
+
+
+def _get_provider() -> ReviewProvider:
+    """Return the right data provider based on available API keys.
+
+    If a Google API key is set, use real data.
+    If not, use demo data so the app still works.
+    """
+    if settings.google_places_api_key:
+        return GooglePlacesProvider()
+    return DemoProvider()
 
 
 class PlanResponse(BaseModel):
@@ -44,7 +58,7 @@ async def plan_trip(request: TripRequest) -> PlanResponse:
     The backend: fetches activities, scores them, optimises the route,
     and returns a day-by-day plan within budget.
     """
-    provider = GooglePlacesProvider()
+    provider = _get_provider()
 
     try:
         activities = await provider.search_activities(
@@ -56,10 +70,11 @@ async def plan_trip(request: TripRequest) -> PlanResponse:
         raise HTTPException(status_code=400, detail=str(e))
 
     if not activities:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No activities found in {request.city}",
-        )
+        demo_cities = "Rome, Tokyo, Paris, Xian" if isinstance(provider, DemoProvider) else ""
+        detail = f"No activities found in {request.city}."
+        if demo_cities:
+            detail += f" Demo mode supports: {demo_cities}. Add a Google Places API key for any city."
+        raise HTTPException(status_code=404, detail=detail)
 
     itinerary = build_itinerary(request, activities)
 
@@ -83,7 +98,7 @@ async def replan_trip(request: ReplanRequest) -> PlanResponse:
     museum" or "add this restaurant" and the itinerary rebuilds
     automatically around their choices.
     """
-    provider = GooglePlacesProvider()
+    provider = _get_provider()
 
     activities = await provider.search_activities(
         city=f"{request.trip_request.city}, {request.trip_request.country}",
@@ -121,7 +136,7 @@ async def list_activities(
     For users who want to explore what's available before
     planning a full trip.
     """
-    provider = GooglePlacesProvider()
+    provider = _get_provider()
 
     activities = await provider.search_activities(
         city=f"{city}, {country}" if country else city,

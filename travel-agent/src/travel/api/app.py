@@ -44,4 +44,14 @@ app.include_router(router, prefix="/api")
 @app.get("/health")
 async def health_check():
     """Simple health check — is the server running?"""
-    return {"status": "ok", "version": "0.1.0"}
+    from travel.config import settings
+
+    mode = "live" if settings.google_places_api_key else "demo"
+    demo_cities = ["Rome", "Tokyo", "Paris", "Xian"] if mode == "demo" else []
+
+    return {
+        "status": "ok",
+        "version": "0.1.0",
+        "mode": mode,
+        "demo_cities": demo_cities,
+    }
