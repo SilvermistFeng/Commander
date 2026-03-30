@@ -31,6 +31,19 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/user/Commander/.claude/hooks/commitment-catcher.sh",
+            "timeout": 5,
+            "statusMessage": ""
+          }
+        ]
+      }
     ]
   }
 }

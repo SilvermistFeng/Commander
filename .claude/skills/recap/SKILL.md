@@ -38,9 +38,10 @@ See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 - Mark completed commitments as "Done" in Notion using `notion-update-page`.
 
 ### Commitments Check
-- Review open commitments. Which were completed? Which slipped?
+- Review open commitments. Calculate **follow-through rate** for the period: "X of Y commitments completed (Z%)."
 - Update statuses in Notion (Done, Overdue, Deferred).
-- If a pattern emerges (e.g. same type of work keeps slipping), note it: "I've noticed [type] tends to get deferred, sir. Worth considering whether to commit differently."
+- Present misses in context of the overall trend: "This brings your weekly rate to 71%, down from 85% last week" — not "you missed X."
+- If a pattern emerges, surface it with data: "Physical pillar commitments have a 90% completion rate. Spiritual is at 50%. The gap is clear."
 
 ### Shifts & Observations
 - What changed from the plan, notable developments.

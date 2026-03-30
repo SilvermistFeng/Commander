@@ -47,7 +47,7 @@ Present a clear table:
 - Status: Done, Missed, Partially Done, Deferred
 - Update statuses in Notion
 
-Calculate a **follow-through rate**: commitments completed / commitments due. This is the number that matters most — it's the direct measure of the discipline bottleneck.
+Calculate a **follow-through rate**: commitments completed / commitments due. Present as a percentage and compare to the previous week: "Follow-through: 5/7 (71%), up from 60% last week." This trend is the direct measure of the discipline bottleneck — show progress over time, not isolated misses.
 
 ### 4. Pattern Spotting
 

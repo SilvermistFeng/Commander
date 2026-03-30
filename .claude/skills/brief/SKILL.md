@@ -49,7 +49,7 @@ Open with a greeting appropriate to the time of day.
 Top 2-3 items from initiatives, with specific next actions.
 
 ### Commitments
-Open and overdue commitments. Be direct: "You committed to X by Friday — that's now overdue."
+Open and overdue commitments. Use **trend-based framing**: "You've completed 5 of 7 commitments this week — 71% follow-through. One overdue: X from Friday." Present misses in context of the overall trend, not as isolated failures.
 
 ### Needs Attention
 Blocked items, approaching deadlines, stalled initiatives.
