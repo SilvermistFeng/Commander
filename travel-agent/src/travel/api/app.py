@@ -7,6 +7,8 @@ with trip plans, activities, and optimised itineraries.
 To run locally: uvicorn travel.api.app:app --reload
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,10 +21,18 @@ app = FastAPI(
 )
 
 # Allow the frontend to talk to the backend
-# (they run on different ports during development)
+# Accepts localhost for development and any Vercel URL for production
+allowed_origins = [
+    "http://localhost:3000",
+]
+# Add production frontend URL if set
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
