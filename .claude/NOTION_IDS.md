@@ -11,6 +11,7 @@ All data lives in the **J.A.R.V.I.S. Command Centre** in Notion. This is the sin
 | **Commitments** | `https://www.notion.so/0b73ee0269854585909ce9053d96293e` | `3a034915-3c5a-448e-8e70-42320440cc20` |
 | **Decisions** | `https://www.notion.so/5273dfc2e176433f88d64c36022a4a2f` | `9f374da5-c859-4708-8381-0a257804482b` |
 | **Brain** | `https://www.notion.so/5020ace38595465c9598f2d72709fa03` | `8f3dac67-eb14-4d96-8742-3a883fc5d7ed` |
+| **Daily Log** | `https://www.notion.so/a6cf86e58f824509be51d06d8334bef2` | `4cb92f4a-bdf0-4ac9-8f53-6b7e302a2e4d` |
 
 ## Hub Page
 
