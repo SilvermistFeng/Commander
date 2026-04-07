@@ -41,10 +41,12 @@ See `.claude/NOTION_IDS.md` for all database IDs and URLs.
 - Identify weak areas based on what the user struggles with
 - Generate practice questions for each topic
 
-**Connect theory to practice** ("How does this apply to my trading system?")
+**Connect theory to practice** ("How does this apply to my work/trading?")
 - Bridge academic concepts to the user's real-world initiatives
 - FlexiMasters finance theory ↔ Trading signals system
 - FlexiMasters analysis methods ↔ Project controller work
+- **Always check if a concept has a matching `/work` calculator**: WACC, NPV, IRR, Payback → `tools/finance/valuation.py`; EVM → `tools/finance/evm.py`; Variance analysis → `tools/finance/variance.py`
+- When a concept maps to a tool, **demonstrate it live**: "This is WACC in theory. Let me show you what it looks like with real numbers:" then run the calculator
 
 ### Check the Brain
 

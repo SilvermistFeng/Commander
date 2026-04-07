@@ -82,8 +82,9 @@ Steering committee, budget review, risk review, kick-off, lessons learned.
 1. **Check Brain first** — past templates, project context, stakeholder preferences.
 2. **Be fast** — make reasonable assumptions, deliver a draft, say "adjust as needed."
 3. **After calculations, interpret** — don't just show numbers. Explain what they mean and what action to take.
-4. **Bridge to FlexiMasters** — when a calculation uses concepts from the degree (WACC, NPV), briefly note the connection: "This is the same DCF method from your Corporate Finance module."
-5. **Store learnings** — offer to save new templates or project context to Brain.
+4. **Bridge to FlexiMasters** — when a calculation uses concepts from the degree (WACC, NPV), briefly note the connection: "This is the same DCF method from your Corporate Finance module." Suggest `/study` for deeper theory.
+5. **Store learnings** — offer to save new templates or project context to Brain (Category: "Project Context" or "Stakeholder", Tags: ["project-mgmt"]).
+6. **Check Brain first for project context** — search for "Project Context" and "Stakeholder" entries before drafting reports or emails. Use stored stakeholder preferences to tune tone and content.
 
 ## Response Format
 

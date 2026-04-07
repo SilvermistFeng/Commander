@@ -44,6 +44,18 @@ Suggest monitoring sweeps when relevant:
 - "It's been two weeks since I last checked on [topic]. Shall I do a sweep?"
 - "There may be new developments in [area] since our last research. Want me to look?"
 
+### Career Radar Mode (`/monitor career`)
+
+When the topic is "career" or "职业", run a career-focused sweep:
+1. **Market demand**: Search for project controller / project management job trends, salary benchmarks, and in-demand skills (PMO, EVM, data analytics, AI in project management).
+2. **Skill gaps**: Compare trending requirements against the user's current skill set (project control, FlexiMasters in Business Finance, Python/trading signals, AI tools).
+3. **Certifications**: Check value of PMP, PRINCE2, APM, or finance certifications in the user's market.
+4. **Industry shifts**: AI impact on project management roles, automation of reporting, new tools displacing old ones.
+5. **Opportunities**: Remote/hybrid roles, freelance project control, consulting pivot options.
+6. **Recommendation**: Concrete actions to strengthen career position this quarter.
+
+Store findings as "Strategic Context" with tag "career" in Brain.
+
 ### What to Monitor (if no specific topic given)
 
 If `/monitor` is called without arguments, do a general sweep:
@@ -51,6 +63,7 @@ If `/monitor` is called without arguments, do a general sweep:
 - Check for new best practices in areas the user works in
 - Look for changes that could affect current decisions
 - Review Brain entries that have expired or may need updating
+- **Include a quick career pulse**: one paragraph on any notable shifts in the project management / finance space
 
 ## Response Format
 

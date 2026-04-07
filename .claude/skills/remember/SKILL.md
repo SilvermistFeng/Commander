@@ -28,10 +28,12 @@ When the user shares an insight, preference, or fact they want retained:
    - **Lesson Learned** — Something that went wrong and what to do differently
    - **Technical Note** — A specific technical fact, config, or reference
    - **Strategic Context** — Background that informs future decisions
+   - **Project Context** — Project-specific info: budget, timeline, key risks, dependencies. Store one entry per project so JARVIS accumulates working knowledge. Include project name in Entry title.
+   - **Stakeholder** — A person the user works with: name, role, communication style, preferences, relationship notes. e.g. "张总 — CFO, prefers short emails, data-driven, risk-averse"
 
 2. **Assess confidence**: High, Medium, Low, or Needs Verification.
 
-3. **Tag it**: Apply relevant tags from: productivity, engineering, strategy, ai, tools, career, finance, health.
+3. **Tag it**: Apply relevant tags from: productivity, engineering, strategy, ai, tools, career, finance, health, project-mgmt, stakeholder.
 
 4. **Store it** using `notion-create-pages` with parent `data_source_id: 8f3dac67-eb14-4d96-8742-3a883fc5d7ed`:
    - `Entry`: Concise title
