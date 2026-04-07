@@ -189,6 +189,7 @@ All data lives in the **J.A.R.V.I.S. Command Centre** in Notion. Use the Notion 
 - `/weather <city>` — Current weather for any city
 - `/work <task>` — Project controller work: reports, emails, analysis, meeting prep, risk assessments, templates
 - `/log` — Quick daily logging: exercise, weight, journal, meals — one command, all into Notion
+- `/data <file_or_task>` — Analyse CSV data: statistics, anomalies, comparisons, pivot tables
 - `/review <file_or_path>` — Code review with security, performance, and quality analysis
 - `/schedule` — Create recurring automated tasks (e.g. weekly `/monitor` sweeps, periodic `/improve` audits)
 
