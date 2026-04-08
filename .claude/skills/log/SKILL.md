@@ -1,6 +1,7 @@
 ---
 name: log
 description: Quick daily logging — exercise, weight, journal, meals in one go
+allowed-tools: Bash
 user-invocable: true
 argument-hint: today's data
 ---

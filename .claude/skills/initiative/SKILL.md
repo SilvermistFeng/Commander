@@ -1,6 +1,7 @@
 ---
 name: initiative
 description: Manage initiatives — add, update, list, prioritize, or review
+allowed-tools: Bash
 user-invocable: true
 argument-hint: action
 ---

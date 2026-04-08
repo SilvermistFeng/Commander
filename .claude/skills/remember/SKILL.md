@@ -1,6 +1,7 @@
 ---
 name: remember
 description: Store knowledge in the JARVIS Brain or recall past learnings
+allowed-tools: Bash
 user-invocable: true
 argument-hint: what to remember or recall
 ---
