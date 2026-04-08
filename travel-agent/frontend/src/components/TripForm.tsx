@@ -8,6 +8,19 @@ interface TripFormProps {
   loading: boolean;
 }
 
+const INTEREST_OPTIONS = [
+  { value: "sightseeing", label: "Sightseeing" },
+  { value: "food", label: "Food" },
+  { value: "history", label: "History" },
+  { value: "culture", label: "Culture" },
+  { value: "art", label: "Art" },
+  { value: "shopping", label: "Shopping" },
+  { value: "nightlife", label: "Nightlife" },
+  { value: "nature", label: "Nature" },
+  { value: "museums", label: "Museums" },
+  { value: "coffee", label: "Coffee" },
+];
+
 export default function TripForm({ onSubmit, loading }: TripFormProps) {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
@@ -15,6 +28,15 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
   const [endDate, setEndDate] = useState("");
   const [budget, setBudget] = useState("");
   const [currency, setCurrency] = useState("USD");
+  const [interests, setInterests] = useState<string[]>([]);
+
+  function toggleInterest(value: string) {
+    setInterests((prev) =>
+      prev.includes(value)
+        ? prev.filter((i) => i !== value)
+        : [...prev, value]
+    );
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,7 +49,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
       end_date: endDate,
       budget: parseFloat(budget),
       currency,
-      interests: [],
+      interests,
     });
   }
 
@@ -119,7 +141,32 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
             <option value="GBP">GBP (£)</option>
             <option value="JPY">JPY (¥)</option>
             <option value="SGD">SGD (S$)</option>
+            <option value="CNY">CNY (¥)</option>
+            <option value="THB">THB (฿)</option>
+            <option value="TRY">TRY (₺)</option>
           </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-600 mb-2">
+          Interests (optional — we&apos;ll prioritise what you love)
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {INTEREST_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => toggleInterest(opt.value)}
+              className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
+                interests.includes(opt.value)
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-slate-600 border-slate-300 hover:border-blue-400"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 
