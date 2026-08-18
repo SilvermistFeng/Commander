@@ -79,7 +79,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-4">
+      <header className="bg-white border-b border-slate-200 px-4 py-4 print:hidden">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">
@@ -94,7 +94,7 @@ export default function Home() {
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {/* Trip planning form */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 print:hidden">
           <TripForm onSubmit={handlePlan} loading={loading} />
         </div>
 
@@ -127,7 +127,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-6 mt-12">
+      <footer className="border-t border-slate-200 py-6 mt-12 print:hidden">
         <p className="text-center text-sm text-slate-400">
           Built with JARVIS · Portfolio Project · Not financial advice
         </p>

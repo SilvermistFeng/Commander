@@ -18,3 +18,13 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, sans-serif;
 }
+
+/* Printing — the itinerary is the thing worth putting on paper.
+   The controls and suggestions are hidden with Tailwind's print:
+   variants; this just drops the page background so it doesn't
+   waste ink. */
+@media print {
+  body {
+    background: #ffffff;
+  }
+}

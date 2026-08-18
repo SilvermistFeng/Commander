@@ -1,37 +1,40 @@
 """Itinerary Optimiser — the brain of the travel agent.
 
 This is where the magic happens. Given a list of possible
-activities and the user's constraints (budget, days, location),
-the optimiser builds the best possible day-by-day plan.
+activities and the user's constraints (budget, days, pace,
+must-visit places), the optimiser builds the best possible
+day-by-day plan.
 
 "Best" means: highest total review scores, lowest travel time
 between stops, within budget. It's a constraint-satisfaction
 problem — like fitting the best pieces into a puzzle where
 the pieces are places to visit and the puzzle is your trip.
 
-Two-stage approach:
+Three stages:
 
 Stage 1 — Assignment (OR-Tools CP-SAT solver):
   Decide which activities go on which day. Maximise total
   quality score while respecting budget, time, variety, and
   user preferences. This is the hard optimisation problem.
+  If the solver can't find a solution (e.g. constraints are
+  too tight), it falls back to a simpler greedy algorithm.
 
-Stage 2 — Routing (brute-force permutations):
+Stage 2 — Routing:
   For each day, find the best order to visit activities so
-  you spend less time travelling between stops. With max 6
-  activities per day, checking all 720 orderings is instant.
+  you spend less time travelling between stops.
 
-If the solver can't find a solution (e.g. constraints are
-too tight), it falls back to a simpler greedy algorithm.
+Stage 3 — Scheduling (see scheduler.py):
+  Put a clock time against every stop, with meals in meal
+  windows and travel time accounted for.
 """
 
-from datetime import timedelta
-import itertools
 import math
 
 from ortools.sat.python import cp_model
 
 from travel.config import settings
+from travel.core.geo import calculate_travel_minutes, optimal_order
+from travel.core.scheduler import build_day_plan, day_date_for, pace_profile
 from travel.models.trip import (
     Activity,
     ActivityType,
@@ -39,6 +42,11 @@ from travel.models.trip import (
     Itinerary,
     TripRequest,
 )
+
+# Kept as internal aliases so the rest of the codebase (and the
+# tests) have one obvious place to reach for these.
+_calculate_travel_minutes = calculate_travel_minutes
+_optimal_day_order = optimal_order
 
 
 # --- Interest mapping ---
@@ -60,6 +68,21 @@ INTEREST_TYPE_MAP: dict[str, set[ActivityType]] = {
 }
 
 INTEREST_BOOST = 1.5  # Score multiplier for matching activities
+
+# How many of each kind of stop belongs in a single day.
+# Sightseeing is the backbone of a trip, so attractions aren't
+# capped here — the day's length and the pace limit those. The
+# rest are capped so a day doesn't turn into four coffees and
+# three shopping trips.
+TYPE_DAILY_CAPS: dict[ActivityType, int] = {
+    ActivityType.RESTAURANT: 2,      # Lunch and dinner
+    ActivityType.CAFE: 2,
+    ActivityType.SHOPPING: 2,
+    ActivityType.ENTERTAINMENT: 2,
+}
+
+# Lunch and dinner — more sit-down meals than this in one day is a chore
+MAX_MEALS_PER_DAY = TYPE_DAILY_CAPS[ActivityType.RESTAURANT]
 
 
 def score_activity(
@@ -89,93 +112,41 @@ def score_activity(
     return base
 
 
-def _calculate_travel_minutes(
-    lat1: float, lon1: float, lat2: float, lon2: float
-) -> int:
-    """Estimate travel time between two points (rough city estimate).
-
-    Uses straight-line distance with a city travel factor.
-    For MVP, this is good enough. Phase 2 will use Google
-    Directions API for actual travel times.
-    """
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1))
-        * math.cos(math.radians(lat2))
-        * math.sin(dlon / 2) ** 2
-    )
-    km = 6371 * 2 * math.asin(math.sqrt(a))
-
-    # Rough city speed: 15 km/h average (walking + transit + waiting)
-    return max(5, int((km / 15) * 60))
-
-
-def _optimal_day_order(
+def match_must_include(
     activities: list[Activity],
-) -> tuple[list[Activity], int]:
-    """Find the visit order that minimises total travel time.
+    wanted_names: list[str],
+    excluded_ids: set[str] | None = None,
+) -> tuple[set[str], list[str]]:
+    """Find the activities the user specifically asked for by name.
 
-    With max 6 activities per day, checking all permutations
-    (6! = 720) is instant. For safety, if there are more than
-    8 activities, use nearest-neighbour instead.
+    The user types "Colosseum" or "trevi"; we find the matching
+    place in the catalogue. Matching is case-insensitive and
+    partial, so they don't have to get the name exactly right.
+
+    Returns the IDs we found, plus any names we couldn't match
+    so the user can be told rather than silently ignored.
     """
-    if len(activities) <= 1:
-        return list(activities), 0
+    excluded_ids = excluded_ids or set()
+    matched: set[str] = set()
+    unmatched: list[str] = []
 
-    if len(activities) > 8:
-        return _nearest_neighbour_order(activities)
+    for wanted in wanted_names:
+        needle = wanted.strip().lower()
+        if not needle:
+            continue
 
-    best_order = list(activities)
-    best_travel = float("inf")
+        hits = [
+            a
+            for a in activities
+            if needle in a.name.lower() and a.id not in excluded_ids
+        ]
+        if hits:
+            # If several places match, take the best-reviewed one
+            matched.add(max(hits, key=score_activity).id)
+        else:
+            unmatched.append(wanted)
 
-    for perm in itertools.permutations(range(len(activities))):
-        travel = sum(
-            _calculate_travel_minutes(
-                activities[perm[i]].latitude,
-                activities[perm[i]].longitude,
-                activities[perm[i + 1]].latitude,
-                activities[perm[i + 1]].longitude,
-            )
-            for i in range(len(perm) - 1)
-        )
-        if travel < best_travel:
-            best_travel = travel
-            best_order = [activities[p] for p in perm]
-
-    return best_order, best_travel
-
-
-def _nearest_neighbour_order(
-    activities: list[Activity],
-) -> tuple[list[Activity], int]:
-    """Nearest-neighbour heuristic for ordering — fallback for large days."""
-    remaining = list(range(len(activities)))
-    order = [remaining.pop(0)]
-    total_travel = 0
-
-    while remaining:
-        last = order[-1]
-        best_next = min(
-            remaining,
-            key=lambda j: _calculate_travel_minutes(
-                activities[last].latitude,
-                activities[last].longitude,
-                activities[j].latitude,
-                activities[j].longitude,
-            ),
-        )
-        total_travel += _calculate_travel_minutes(
-            activities[last].latitude,
-            activities[last].longitude,
-            activities[best_next].latitude,
-            activities[best_next].longitude,
-        )
-        order.append(best_next)
-        remaining.remove(best_next)
-
-    return [activities[i] for i in order], total_travel
+    return matched, unmatched
 
 
 def _solve_assignment(
@@ -187,12 +158,18 @@ def _solve_assignment(
     locked_ids: set[str],
     interests: list[str] | None = None,
     time_limit_seconds: int = 10,
+    meal_balance: bool = True,
 ) -> list[list[Activity]] | None:
     """Use OR-Tools CP-SAT to assign activities to days optimally.
 
     This is the core optimisation: decide which activities go on
     which day to maximise total quality while respecting all
     constraints (budget, time, variety, locked items).
+
+    With meal_balance on, every day is also required to have at
+    least one restaurant and no more than two — otherwise the
+    solver happily stacks all the best restaurants on one day
+    and leaves you with nothing to eat on the others.
 
     Returns a list of activity lists (one per day), or None
     if no feasible solution exists.
@@ -244,18 +221,27 @@ def _solve_assignment(
             <= max_minutes_per_day
         )
 
-    # 6. Type variety — max 3 of any single type per day
+    # 6. Type variety — don't let one kind of stop take over a day
     #    (you don't want 5 restaurants and 1 museum)
-    max_same_type = min(3, max_per_day)
-    for d in range(num_days):
-        for act_type in ActivityType:
-            type_indices = [
-                a for a in range(n) if candidates[a].activity_type == act_type
-            ]
-            if len(type_indices) > max_same_type:
-                model.add(
-                    sum(x[a, d] for a in type_indices) <= max_same_type
-                )
+    for act_type, cap in TYPE_DAILY_CAPS.items():
+        type_indices = [
+            a for a in range(n) if candidates[a].activity_type == act_type
+        ]
+        if len(type_indices) <= cap:
+            continue
+        for d in range(num_days):
+            model.add(sum(x[a, d] for a in type_indices) <= min(cap, max_per_day))
+
+    # 7. Meals — spread them out so every day has somewhere to eat
+    if meal_balance:
+        meal_indices = [
+            a
+            for a in range(n)
+            if candidates[a].activity_type == ActivityType.RESTAURANT
+        ]
+        if len(meal_indices) >= num_days:
+            for d in range(num_days):
+                model.add(sum(x[a, d] for a in meal_indices) >= 1)
 
     # --- Objective: maximise total quality score ---
     # Scale to integers (CP-SAT works with integers)
@@ -296,7 +282,8 @@ def _greedy_assignment(
     """Fallback greedy assignment if the OR-Tools solver fails.
 
     Simple approach: sort by score, assign each activity to the
-    first day that has room for it.
+    first day that has room for it. Locked and must-visit places
+    are placed first so they never get squeezed out.
     """
     scored = sorted(
         candidates, key=lambda a: score_activity(a, interests), reverse=True
@@ -336,6 +323,14 @@ def _greedy_assignment(
             ):
                 continue
 
+            cap = TYPE_DAILY_CAPS.get(activity.activity_type)
+            if cap is not None:
+                same_type = sum(
+                    1 for a in day if a.activity_type == activity.activity_type
+                )
+                if same_type >= cap:
+                    continue
+
             day.append(activity)
             used_ids.add(activity.id)
             break
@@ -349,42 +344,57 @@ def build_itinerary(
     locked: list[str] | None = None,
     excluded: list[str] | None = None,
 ) -> Itinerary:
-    """Build an optimised itinerary from available activities.
+    """Build an optimised, timed itinerary from available activities.
 
     This is the main entry point. It:
-    1. Filters out excluded/low-rated activities
-    2. Uses OR-Tools to assign activities to days (or greedy fallback)
-    3. Optimises the visit order within each day
-    4. Returns a complete day-by-day plan
+    1. Finds the places the user specifically asked for by name
+    2. Filters out excluded/low-rated activities
+    3. Uses OR-Tools to assign activities to days (or greedy fallback)
+    4. Optimises the visit order and puts clock times against each stop
 
     Args:
-        request: The user's trip request (city, dates, budget)
+        request: The user's trip request (city, dates, budget, pace)
         activities: All available activities from review providers
         locked: Activity IDs the user wants to keep (won't be removed)
         excluded: Activity IDs the user doesn't want (won't be added)
 
     Returns:
-        An optimised Itinerary with day-by-day plans
+        An optimised Itinerary with day-by-day, hour-by-hour plans
     """
     locked_ids = set(locked or [])
     excluded_ids = set(excluded or [])
+
+    # Places the user named explicitly ("I must see the Colosseum").
+    # These are locked in and bypass the quality filter — if they
+    # asked for it, they get it.
+    must_ids, unmatched = match_must_include(
+        activities, request.must_include, excluded_ids
+    )
+    locked_ids |= must_ids
 
     # Filter: remove excluded, below minimum rating, and unwanted types
     candidates = [
         a
         for a in activities
         if a.id not in excluded_ids
-        and a.review_score >= settings.min_review_score
-        and a.activity_type not in request.excluded_types
+        and (
+            a.id in must_ids
+            or (
+                a.review_score >= settings.min_review_score
+                and a.activity_type not in request.excluded_types
+            )
+        )
     ]
 
-    # Trip parameters
+    # Trip parameters — pace decides how full each day is
+    profile = pace_profile(request.pace)
     num_days = (request.end_date - request.start_date).days
     if num_days <= 0:
         num_days = 1
     daily_budget = request.budget / num_days
-    max_per_day = settings.max_activities_per_day
-    max_minutes = 600  # 10 hours of active time
+    max_per_day = min(profile["max_activities"], settings.max_activities_per_day)
+    max_minutes = profile["active_minutes"]
+    day_start = profile["day_start"]
 
     if not candidates:
         return Itinerary(
@@ -392,16 +402,19 @@ def build_itinerary(
             days=[
                 DayPlan(
                     day_number=d + 1,
-                    date=request.start_date + timedelta(days=d),
+                    date=day_date_for(request.start_date, d),
                 )
                 for d in range(num_days)
             ],
             total_cost=0.0,
             total_activities=0,
             budget_remaining=request.budget,
+            unmatched_must_include=unmatched,
         )
 
-    # Stage 1: Assign activities to days
+    # Stage 1: Assign activities to days. Try for a meal on every
+    # day first; if that makes the problem unsolvable, drop the
+    # requirement rather than give the user nothing.
     days_assignment = _solve_assignment(
         candidates,
         num_days,
@@ -411,7 +424,21 @@ def build_itinerary(
         locked_ids,
         request.interests,
         settings.max_optimisation_seconds,
+        meal_balance=True,
     )
+
+    if days_assignment is None:
+        days_assignment = _solve_assignment(
+            candidates,
+            num_days,
+            daily_budget,
+            max_per_day,
+            max_minutes,
+            locked_ids,
+            request.interests,
+            settings.max_optimisation_seconds,
+            meal_balance=False,
+        )
 
     if days_assignment is None:
         days_assignment = _greedy_assignment(
@@ -424,38 +451,32 @@ def build_itinerary(
             request.interests,
         )
 
-    # Stage 2: Optimise visit order within each day
+    # Stages 2 and 3: route each day, then put it against the clock
     days: list[DayPlan] = []
     total_cost = 0.0
     total_score = 0.0
 
     for day_num in range(num_days):
-        day_date = request.start_date + timedelta(days=day_num)
         day_activities = days_assignment[day_num]
+        day = build_day_plan(
+            day_number=day_num + 1,
+            day_date=day_date_for(request.start_date, day_num),
+            activities=day_activities,
+            day_start_minutes=day_start,
+        )
 
-        ordered, travel_minutes = _optimal_day_order(day_activities)
-
-        day_cost = sum(a.estimated_cost for a in ordered)
-        total_cost += day_cost
+        total_cost += day.total_cost
         total_score += sum(
-            score_activity(a, request.interests) for a in ordered
+            score_activity(a, request.interests) for a in day.activities
         )
-
-        days.append(
-            DayPlan(
-                day_number=day_num + 1,
-                date=day_date,
-                activities=ordered,
-                total_cost=round(day_cost, 2),
-                total_travel_minutes=travel_minutes,
-            )
-        )
+        days.append(day)
 
     return Itinerary(
         trip_request=request,
         days=days,
         total_cost=round(total_cost, 2),
-        total_activities=sum(len(d.activities) for d in days),
+        total_activities=sum(len(d.items) for d in days),
         budget_remaining=round(request.budget - total_cost, 2),
         optimisation_score=round(total_score, 2),
+        unmatched_must_include=unmatched,
     )

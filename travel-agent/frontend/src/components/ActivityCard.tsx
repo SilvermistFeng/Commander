@@ -7,6 +7,9 @@ interface ActivityCardProps {
   onRemove?: (id: string) => void;
   onAdd?: (id: string) => void;
   isAlternative?: boolean;
+  startTime?: string;
+  endTime?: string;
+  currency?: string;
 }
 
 const TYPE_ICONS: Record<string, string> = {
@@ -17,11 +20,19 @@ const TYPE_ICONS: Record<string, string> = {
   entertainment: "🎭",
 };
 
+/** Turn "09:00:00" into "09:00" */
+function clock(value?: string): string {
+  return value ? value.slice(0, 5) : "";
+}
+
 export default function ActivityCard({
   activity,
   onRemove,
   onAdd,
   isAlternative = false,
+  startTime,
+  endTime,
+  currency = "$",
 }: ActivityCardProps) {
   const icon = TYPE_ICONS[activity.activity_type] || "📍";
 
@@ -33,13 +44,25 @@ export default function ActivityCard({
           : "border-slate-200 bg-white"
       }`}
     >
-      <span className="text-2xl">{icon}</span>
+      {startTime ? (
+        <div className="w-16 shrink-0 text-right">
+          <p className="font-semibold text-slate-800 tabular-nums">
+            {clock(startTime)}
+          </p>
+          <p className="text-xs text-slate-400 tabular-nums">
+            {clock(endTime)}
+          </p>
+        </div>
+      ) : (
+        <span className="text-2xl">{icon}</span>
+      )}
 
       <div className="flex-1 min-w-0">
         <h4 className="font-semibold text-slate-800 truncate">
+          {startTime && <span className="mr-1">{icon}</span>}
           {activity.name}
         </h4>
-        <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 mt-1">
           <span>
             ⭐ {activity.review_score.toFixed(1)}
             <span className="text-xs ml-1">
@@ -48,7 +71,7 @@ export default function ActivityCard({
           </span>
           <span>⏱️ {activity.estimated_minutes}min</span>
           <span>
-            💰 ${activity.estimated_cost.toFixed(0)}
+            💰 {currency} {activity.estimated_cost.toFixed(0)}
           </span>
         </div>
         {activity.address && (
@@ -61,7 +84,7 @@ export default function ActivityCard({
       {onRemove && !isAlternative && (
         <button
           onClick={() => onRemove(activity.id)}
-          className="text-sm px-2 py-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+          className="text-sm px-2 py-1 text-red-600 hover:bg-red-50 rounded transition-colors print:hidden"
           title="Remove from itinerary"
         >
           ✕
@@ -71,7 +94,7 @@ export default function ActivityCard({
       {onAdd && isAlternative && (
         <button
           onClick={() => onAdd(activity.id)}
-          className="text-sm px-2 py-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          className="text-sm px-2 py-1 text-blue-600 hover:bg-blue-50 rounded transition-colors print:hidden"
           title="Add to itinerary"
         >
           + Add

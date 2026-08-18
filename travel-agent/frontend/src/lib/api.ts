@@ -7,6 +7,9 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
+/** How full the traveller wants each day to be */
+export type Pace = "relaxed" | "balanced" | "packed";
+
 /** What we send to plan a trip */
 export interface TripRequest {
   city: string;
@@ -16,6 +19,8 @@ export interface TripRequest {
   budget: number;
   currency: string;
   interests: string[];
+  must_include: string[];
+  pace: Pace;
 }
 
 /** A single activity / place to visit */
@@ -35,11 +40,19 @@ export interface Activity {
   photo_url: string;
 }
 
+/** An activity with a clock time against it */
+export interface ScheduleItem {
+  activity: Activity;
+  start_time: string;
+  end_time: string;
+  travel_minutes_from_previous: number;
+}
+
 /** One day of the trip */
 export interface DayPlan {
   day_number: number;
   date: string;
-  activities: Activity[];
+  items: ScheduleItem[];
   total_cost: number;
   total_travel_minutes: number;
 }
@@ -51,12 +64,31 @@ export interface Itinerary {
   total_cost: number;
   total_activities: number;
   budget_remaining: number;
+  unmatched_must_include: string[];
 }
 
 /** What the API returns */
 export interface PlanResponse {
   itinerary: Itinerary;
   available_alternatives: Activity[];
+}
+
+/** A city the backend can plan for */
+export interface CityOption {
+  city: string;
+  country: string;
+}
+
+/** Which cities are available, and whether we're on live data */
+export interface CitiesResponse {
+  mode: "live" | "demo";
+  cities: CityOption[];
+}
+
+/** Read an error message out of a failed response */
+async function toError(res: Response): Promise<Error> {
+  const err = await res.json().catch(() => ({ detail: "Server error" }));
+  return new Error(err.detail || `API error: ${res.status}`);
 }
 
 /** Ask the backend to plan a trip */
@@ -67,10 +99,7 @@ export async function planTrip(request: TripRequest): Promise<PlanResponse> {
     body: JSON.stringify(request),
   });
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: "Server error" }));
-    throw new Error(err.detail || `API error: ${res.status}`);
-  }
+  if (!res.ok) throw await toError(res);
 
   return res.json();
 }
@@ -91,10 +120,46 @@ export async function replanTrip(
     }),
   });
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: "Server error" }));
-    throw new Error(err.detail || `API error: ${res.status}`);
-  }
+  if (!res.ok) throw await toError(res);
 
   return res.json();
+}
+
+/** Which cities can we plan for right now? */
+export async function fetchCities(): Promise<CitiesResponse> {
+  const res = await fetch(`${API_BASE}/cities`);
+
+  if (!res.ok) throw await toError(res);
+
+  return res.json();
+}
+
+/**
+ * Download the itinerary as a calendar file.
+ *
+ * The backend builds the file, the browser saves it, and the
+ * traveller opens it in Google Calendar, Apple Calendar or Outlook.
+ */
+export async function downloadItineraryCalendar(
+  itinerary: Itinerary
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/export/ics`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(itinerary),
+  });
+
+  if (!res.ok) throw await toError(res);
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const city = itinerary.trip_request.city.toLowerCase().replace(/\s+/g, "-");
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${city}-${itinerary.trip_request.start_date}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }

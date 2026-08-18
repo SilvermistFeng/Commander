@@ -11,7 +11,6 @@ To add a new demo city: add an entry to DEMO_CITIES below.
 from travel.models.trip import Activity, ActivityType
 from travel.services.reviews.base import ReviewProvider
 
-
 DEMO_CITIES: dict[str, list[Activity]] = {
     "rome": [
         Activity(id="rome-1", name="Colosseum", activity_type=ActivityType.ATTRACTION, latitude=41.8902, longitude=12.4922, review_score=4.7, review_count=189432, review_source="google", estimated_cost=16, estimated_minutes=120, address="Piazza del Colosseo, Rome"),
@@ -167,6 +166,29 @@ DEMO_CITIES: dict[str, list[Activity]] = {
         Activity(id="istanbul-15", name="Turkish Bath (Cemberlitas)", activity_type=ActivityType.ENTERTAINMENT, latitude=41.0085, longitude=28.9716, review_score=4.4, review_count=15672, review_source="google", estimated_cost=35, estimated_minutes=90, address="Vezirhan Cd, Istanbul"),
     ],
 }
+
+
+# Display names and countries for the demo cities, so the app can
+# tell the user which places it knows about without a Google key.
+DEMO_CITY_INFO: dict[str, dict[str, str]] = {
+    "rome": {"city": "Rome", "country": "Italy"},
+    "tokyo": {"city": "Tokyo", "country": "Japan"},
+    "paris": {"city": "Paris", "country": "France"},
+    "xian": {"city": "Xi'an", "country": "China"},
+    "london": {"city": "London", "country": "United Kingdom"},
+    "barcelona": {"city": "Barcelona", "country": "Spain"},
+    "bangkok": {"city": "Bangkok", "country": "Thailand"},
+    "new york": {"city": "New York", "country": "United States"},
+    "istanbul": {"city": "Istanbul", "country": "Türkiye"},
+}
+
+
+def demo_cities() -> list[dict[str, str]]:
+    """The cities demo mode can plan for, in a display-ready form."""
+    return [
+        DEMO_CITY_INFO.get(key, {"city": key.title(), "country": ""})
+        for key in DEMO_CITIES
+    ]
 
 
 class DemoProvider(ReviewProvider):
