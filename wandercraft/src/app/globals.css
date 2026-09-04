@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Warm Editorial / Modern Nomad — theme tokens
+   Every colour in the app comes from one of these. Light values live
+   on :root, dark values override them per theme state below, and @theme inline
+   exposes them to Tailwind as bg-, text- and border- utilities.
+   --------------------------------------------------------------- */
+
+:root {
+  --canvas: #fafaf8;
+  --surface: #ffffff;
+  --surface-2: #f5f4f1;
+  --surface-3: #edebe6;
+  --line: #e7e5e4;
+  --line-strong: #d6d3d1;
+
+  --ink: #1c1917;
+  --ink-2: #57534e;
+  --muted: #78716c;
+
+  --accent: #d95338;
+  --accent-hover: #c4432b;
+  --accent-ink: #ffffff;
+  --accent-wash: #fbede9;
+
+  --sage: #2d5a46;
+  --sage-hover: #244838;
+  --sage-ink: #ffffff;
+  --sage-wash: #e8f0eb;
+
+  --teal: #0f766e;
+  --teal-wash: #e0f2f0;
+
+  --amber: #b45309;
+  --amber-wash: #fdf3e3;
+
+  --danger: #b91c1c;
+  --danger-wash: #fef0f0;
+
+  --shadow-ambient: 0 4px 20px -4px rgb(28 25 23 / 0.06);
+  --shadow-lift: 0 10px 30px -10px rgb(28 25 23 / 0.16);
+  --shadow-float: 0 24px 60px -20px rgb(28 25 23 / 0.28);
+}
+
+/* Dark tokens are declared twice on purpose: once for people whose OS is dark
+   and who have not overridden it, and once for an explicit choice, so the
+   toggle wins in both directions. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --canvas: #0f1416;
+  --surface: #1c2124;
+  --surface-2: #171c1f;
+  --surface-3: #242b2f;
+  --line: #2c3336;
+  --line-strong: #3d4548;
+
+  --ink: #f2efea;
+  --ink-2: #c4beb6;
+  --muted: #8b8781;
+
+  --accent: #f26a54;
+  --accent-hover: #ff8068;
+  --accent-ink: #1a0f0c;
+  --accent-wash: #2a1b18;
+
+  --sage: #7fb79a;
+  --sage-hover: #98c9ae;
+  --sage-ink: #0d1a14;
+  --sage-wash: #16241d;
+
+  --teal: #5ec5b6;
+  --teal-wash: #10241f;
+
+  --amber: #e8a33d;
+  --amber-wash: #2a2015;
+
+  --danger: #f87171;
+  --danger-wash: #2a1717;
+
+  --shadow-ambient: 0 4px 20px -4px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 10px 30px -10px rgb(0 0 0 / 0.55);
+  --shadow-float: 0 24px 60px -20px rgb(0 0 0 / 0.7);
+  }
+}
+
+:root[data-theme="dark"] {
+  --canvas: #0f1416;
+  --surface: #1c2124;
+  --surface-2: #171c1f;
+  --surface-3: #242b2f;
+  --line: #2c3336;
+  --line-strong: #3d4548;
+
+  --ink: #f2efea;
+  --ink-2: #c4beb6;
+  --muted: #8b8781;
+
+  --accent: #f26a54;
+  --accent-hover: #ff8068;
+  --accent-ink: #1a0f0c;
+  --accent-wash: #2a1b18;
+
+  --sage: #7fb79a;
+  --sage-hover: #98c9ae;
+  --sage-ink: #0d1a14;
+  --sage-wash: #16241d;
+
+  --teal: #5ec5b6;
+  --teal-wash: #10241f;
+
+  --amber: #e8a33d;
+  --amber-wash: #2a2015;
+
+  --danger: #f87171;
+  --danger-wash: #2a1717;
+
+  --shadow-ambient: 0 4px 20px -4px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 10px 30px -10px rgb(0 0 0 / 0.55);
+  --shadow-float: 0 24px 60px -20px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-wash: var(--accent-wash);
+
+  --color-sage: var(--sage);
+  --color-sage-hover: var(--sage-hover);
+  --color-sage-ink: var(--sage-ink);
+  --color-sage-wash: var(--sage-wash);
+
+  --color-teal: var(--teal);
+  --color-teal-wash: var(--teal-wash);
+
+  --color-amber: var(--amber);
+  --color-amber-wash: var(--amber-wash);
+
+  --color-danger: var(--danger);
+  --color-danger-wash: var(--danger-wash);
+
+  --font-display: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --shadow-ambient: var(--shadow-ambient);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-float: var(--shadow-float);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+      color-scheme: dark;
+    }
+  }
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--accent-wash);
+    color: var(--accent-hover);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Numbers in tables and money figures line up. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Hero art for destinations: a gradient with a fine grain overlay, so a
+     card never waits on — or breaks because of — an external image host. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Leaflet's own stylesheet is imported by the map component; these tune it
+   to the theme so the map doesn't look bolted on. */
+.leaflet-container {
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+}
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 88%, transparent) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a {
+  color: var(--muted) !important;
+}
+.leaflet-bar a {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+.leaflet-bar a:hover {
+  background: var(--surface-2) !important;
+}
+/* Tints the OpenStreetMap tiles so the map belongs to the dark theme. */
+:root[data-theme="dark"] .leaflet-tile-pane {
+  filter: brightness(0.76) saturate(0.72) hue-rotate(174deg) invert(0.94);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .leaflet-tile-pane {
+    filter: brightness(0.76) saturate(0.72) hue-rotate(174deg) invert(0.94);
+  }
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  box-shadow: var(--shadow-lift) !important;
+  border-radius: 12px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes wc-fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes wc-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+@keyframes wc-scale-in {
+  from { opacity: 0; transform: scale(0.97) translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.anim-fade-up { animation: wc-fade-up 0.28s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.anim-slide-in { animation: wc-slide-in 0.28s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.anim-scale-in { animation: wc-scale-in 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
