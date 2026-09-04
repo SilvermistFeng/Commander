@@ -1,0 +1,279 @@
+// WanderCraft — relational schema
+// Postgres via Prisma. Everything hanging off a Trip cascades on delete.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- enums
+
+enum UnitSystem {
+  METRIC
+  IMPERIAL
+}
+
+enum WeekStartDay {
+  MONDAY
+  SUNDAY
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum TripVisibility {
+  PRIVATE
+  SHARED
+  PUBLIC
+}
+
+enum CollaboratorRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+}
+
+enum ActivityCategory {
+  SIGHTSEEING
+  DINING
+  TRANSIT
+  LODGING
+  ACTIVITY
+  REST
+}
+
+enum BookingStatus {
+  PLANNED
+  CONFIRMED
+}
+
+enum DocumentCategory {
+  FLIGHT
+  HOTEL
+  TRANSIT
+  ACTIVITY
+  VISA_ID
+}
+
+enum ExpenseCategory {
+  FOOD
+  LODGING
+  TRANSPORT
+  ACTIVITIES
+  SHOPPING
+  OTHER
+}
+
+enum PackingCategory {
+  DOCUMENTS
+  CLOTHES
+  ELECTRONICS
+  TOILETRIES
+}
+
+// ---------------------------------------------------------------- models
+
+model User {
+  id                String       @id @default(cuid())
+  email             String       @unique
+  passwordHash      String
+  name              String
+  username          String       @unique
+  avatarUrl         String?
+  bio               String?
+  homeCity          String?
+  homeAirport       String?
+  preferredCurrency String       @default("USD")
+  unitSystem        UnitSystem   @default(METRIC)
+  weekStartDay      WeekStartDay @default(MONDAY)
+  theme             Theme        @default(SYSTEM)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  trips         Trip[]             @relation("TripOwner")
+  collaborators TripCollaborator[]
+  expensesPaid  Expense[]          @relation("ExpensePayer")
+  expenseSplits ExpenseSplit[]
+}
+
+model Destination {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  name           String
+  country        String
+  continent      String
+  bestSeason     String
+  avgDailyBudget Decimal  @db.Decimal(10, 2)
+  avgDailyBudgetLocal Decimal @default(0) @db.Decimal(14, 2)
+  currency       String   @default("USD")
+  heroImage      String
+  summary        String
+  latitude       Float
+  longitude      Float
+  tags           String[]
+  blueprintData  Json
+  createdAt      DateTime @default(now())
+
+  trips Trip[]
+}
+
+model Trip {
+  id              String         @id @default(cuid())
+  title           String
+  destinationId   String?
+  destinationName String
+  country         String
+  latitude        Float?
+  longitude       Float?
+  startDate       DateTime
+  endDate         DateTime
+  coverImage      String?
+  travelStyle     String?
+  totalBudget     Decimal        @default(0) @db.Decimal(12, 2)
+  currency        String         @default("USD")
+  visibility      TripVisibility @default(PRIVATE)
+  ownerId         String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  owner         User               @relation("TripOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  destination   Destination?       @relation(fields: [destinationId], references: [id], onDelete: SetNull)
+  collaborators TripCollaborator[]
+  activities    ItineraryActivity[]
+  documents     DocumentVoucher[]
+  expenses      Expense[]
+  packingItems  PackingItem[]
+
+  @@index([ownerId])
+}
+
+model TripCollaborator {
+  id          String           @id @default(cuid())
+  tripId      String
+  userId      String?
+  email       String
+  role        CollaboratorRole @default(VIEWER)
+  inviteToken String           @unique
+  status      InviteStatus     @default(PENDING)
+  createdAt   DateTime         @default(now())
+
+  trip Trip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([tripId, email])
+  @@index([tripId])
+}
+
+model ItineraryActivity {
+  id            String           @id @default(cuid())
+  tripId        String
+  dayNumber     Int
+  startTime     String?
+  endTime       String?
+  category      ActivityCategory @default(SIGHTSEEING)
+  name          String
+  locationName  String?
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  cost          Decimal          @default(0) @db.Decimal(10, 2)
+  currency      String           @default("USD")
+  notes         String?
+  bookingStatus BookingStatus    @default(PLANNED)
+  sortOrder     Int              @default(0)
+  createdAt     DateTime         @default(now())
+
+  trip      Trip              @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  documents DocumentVoucher[]
+  expenses  Expense[]
+
+  @@index([tripId, dayNumber])
+}
+
+model DocumentVoucher {
+  id                  String           @id @default(cuid())
+  tripId              String
+  activityId          String?
+  category            DocumentCategory
+  title               String
+  provider            String?
+  confirmationCode    String?
+  fileUrl             String?
+  fileName            String?
+  fileSize            Int?
+  startDate           DateTime?
+  endDate             DateTime?
+  details             String?
+  cost                Decimal          @default(0) @db.Decimal(10, 2)
+  currency            String           @default("USD")
+  cancellationDeadline DateTime?
+  notes               String?
+  createdAt           DateTime         @default(now())
+
+  trip     Trip               @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activity ItineraryActivity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+
+  @@index([tripId])
+}
+
+model Expense {
+  id         String          @id @default(cuid())
+  tripId     String
+  activityId String?
+  title      String
+  amount     Decimal         @db.Decimal(10, 2)
+  currency   String          @default("USD")
+  category   ExpenseCategory @default(OTHER)
+  date       DateTime        @default(now())
+  paidById   String?
+  paidByName String
+  createdAt  DateTime        @default(now())
+
+  trip     Trip               @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activity ItineraryActivity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  paidBy   User?              @relation("ExpensePayer", fields: [paidById], references: [id], onDelete: SetNull)
+  splits   ExpenseSplit[]
+
+  @@index([tripId])
+}
+
+model ExpenseSplit {
+  id            String  @id @default(cuid())
+  expenseId     String
+  userId        String?
+  participantName String
+  splitAmount   Decimal @db.Decimal(10, 2)
+  isSettled     Boolean @default(false)
+
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([expenseId])
+}
+
+model PackingItem {
+  id          String          @id @default(cuid())
+  tripId      String
+  category    PackingCategory @default(CLOTHES)
+  title       String
+  isPacked    Boolean         @default(false)
+  isEssential Boolean         @default(false)
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@index([tripId])
+}
